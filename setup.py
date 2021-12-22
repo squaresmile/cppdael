@@ -15,7 +15,7 @@ setup(
     name="cppdael",
     description="A wrapper for Rijndael",
     author="tsunyoku",
-    version="0.0.2",
+    version="0.0.2.1",
     keywords=["python", "cpython", "rijndael", "aes", "encryption"],
     classifiers=[
         "License :: OSI Approved :: MIT License",

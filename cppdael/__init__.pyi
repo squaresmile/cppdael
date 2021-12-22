@@ -1,5 +1,14 @@
 from typing import Literal, Optional
 
+class PaddingBase:
+    block_size: int
+    def __init__(self, block_size: int): ...
+    def encode(self, source: bytes) -> bytes: ...
+    def decode(self, source: bytes) -> bytes: ...
+
+class ZeroPadding(PaddingBase): ...
+class Pkcs7Padding(PaddingBase): ...
+
 MODE_ECB: Literal[0]
 MODE_CBC: Literal[1]
 MODE_CFB: Literal[2]
@@ -22,6 +31,24 @@ def encrypt(
     key: bytes,
     iv: bytes,
     plain_text: bytes,
+    hard_key_size: Optional[int] = None,
+) -> bytes: ...
+def decrypt_unpad(
+    block_cipher_mode: BlockCipherMode,
+    block_size: RijndaelBlockSize,
+    key: bytes,
+    iv: bytes,
+    cipher: bytes,
+    padding: PaddingBase,
+    hard_key_size: Optional[int] = None,
+) -> bytes: ...
+def pad_encrypt(
+    block_cipher_mode: BlockCipherMode,
+    block_size: RijndaelBlockSize,
+    key: bytes,
+    iv: bytes,
+    plain_text: bytes,
+    padding: PaddingBase,
     hard_key_size: Optional[int] = None,
 ) -> bytes: ...
 

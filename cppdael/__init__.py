@@ -23,11 +23,8 @@ def decrypt_unpad(
     iv: bytes,
     cipher: bytes,
     padding: PaddingBase,
-    hard_key_size: Optional[int] = None,
 ) -> bytes:
-    return padding.decode(
-        decrypt(block_cipher_mode, block_size, key, iv, cipher, hard_key_size)
-    )
+    return padding.decode(decrypt(block_cipher_mode, block_size, key, iv, cipher))
 
 
 def pad_encrypt(
@@ -37,16 +34,8 @@ def pad_encrypt(
     iv: bytes,
     plain_text: bytes,
     padding: PaddingBase,
-    hard_key_size: Optional[int] = None,
 ) -> bytes:
-    return encrypt(
-        block_cipher_mode,
-        block_size,
-        key,
-        iv,
-        padding.encode(plain_text),
-        hard_key_size,
-    )
+    return encrypt(block_cipher_mode, block_size, key, iv, padding.encode(plain_text))
 
 
 __all__ = [

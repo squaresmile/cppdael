@@ -40,7 +40,6 @@ def decrypt_unpad(
     iv: bytes,
     cipher: bytes,
     padding: PaddingBase,
-    hard_key_size: Optional[int] = None,
 ) -> bytes: ...
 def pad_encrypt(
     block_cipher_mode: BlockCipherMode,
@@ -49,7 +48,6 @@ def pad_encrypt(
     iv: bytes,
     plain_text: bytes,
     padding: PaddingBase,
-    hard_key_size: Optional[int] = None,
 ) -> bytes: ...
 
 RijndaelKeySize = Literal[16, 24, 32]

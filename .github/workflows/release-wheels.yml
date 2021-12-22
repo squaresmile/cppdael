@@ -1,0 +1,52 @@
+name: Build wheels
+
+on:
+ push:
+  tags:
+   - 'v*'
+
+jobs:
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up QEMU
+        if: runner.os == 'Linux'
+        uses: docker/setup-qemu-action@v1
+        with:
+          platforms: all
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.3.1
+        env:
+          CIBW_BEFORE_BUILD: pip install mypy
+          CIBW_ARCHS_LINUX: auto aarch64
+          CIBW_BUILD: |
+            cp36-macosx_x86_64  cp36-win_amd64  cp36-win32  cp36-manylinux_x86_64  cp36-manylinux_i686  cp36-manylinux_aarch64
+            cp37-macosx_x86_64  cp37-win_amd64  cp37-win32  cp37-manylinux_x86_64  cp37-manylinux_i686  cp37-manylinux_aarch64
+            cp38-macosx_x86_64  cp38-win_amd64  cp38-win32  cp38-manylinux_x86_64  cp38-manylinux_i686  cp38-manylinux_aarch64
+            cp39-macosx_x86_64  cp39-win_amd64  cp39-win32  cp39-manylinux_x86_64  cp39-manylinux_i686  cp39-manylinux_aarch64
+            cp310-macosx_x86_64 cp310-win_amd64 cp310-win32 cp310-manylinux_x86_64 cp310-manylinux_i686 cp310-manylinux_aarch64
+      - uses: actions/upload-artifact@v2
+        with:
+          name: wheels
+          path: ./wheelhouse/*.whl
+
+  github-release:
+    name: Release
+    runs-on: ubuntu-latest
+    if: "startsWith(github.ref, 'refs/tags/v')"
+    needs: [ build_wheels ]
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: wheels
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ github.ref_name }}
+          files: '*.whl'
